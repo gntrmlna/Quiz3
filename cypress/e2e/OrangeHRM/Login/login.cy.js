@@ -20,13 +20,21 @@ describe('Login Feature', ()=>{
     it('Pengguna tidak dapat login menggunakan data invalid - TC_002', ()=>{
         loginPage.inputUsername().type('cobacoba');
         loginPage.inputPassword().type('cobajuga');
+
+        cy.intercept('GET', 'https://opensource-demo.orangehrmlive.com/web/index.php/core/i18n/messages').as('invalidData');
         loginPage.typeSubmit().click();
+        cy.wait('@invalidData');
+
         loginPage.invalidCredentials().should('have.text', 'Invalid credentials');
     })
     it('Case sensitive password - TC_004', ()=>{
         loginPage.inputUsername().type('Admin');
         loginPage.inputPassword().type('Admin123');
+
+        cy.intercept('GET', 'https://opensource-demo.orangehrmlive.com/web/index.php/core/i18n/messages').as('caseSensitive');
         loginPage.typeSubmit().click();
+        cy.wait('@caseSensitive');
+
         loginPage.invalidCredentials().should('have.text', 'Invalid credentials');
     })
     it('Pengguna tidak dapat login jika username dan password tidak diisi - TC_005', ()=>{
